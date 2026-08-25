@@ -1,0 +1,62 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+.Python
+build/
+dist/
+*.egg-info/
+.eggs/
+
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# IDE / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Environment and secrets
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# Data and large artifacts
+/data/raw/
+/data/processed/
+*.mp4
+*.avi
+*.mov
+*.mkv
+*.wav
+*.flac
+*.pt
+*.pth
+*.ckpt
+*.onnx
+*.safetensors
+
+# Experiment outputs
+runs/
+wandb/
+mlruns/
+checkpoints/
+outputs/
+
+# Python tooling
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
