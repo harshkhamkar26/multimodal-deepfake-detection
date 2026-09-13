@@ -21,7 +21,15 @@ Design, implement, and experimentally evaluate a reproducible audio-visual deepf
 - studies modality disagreement and failure cases; and
 - produces auditable inference outputs and research documentation.
 
-## 3. Secondary Objectives
+## 3. Dataset Selection Policy
+
+The primary dataset will be finalized only after verifying access, licensing, modality coverage, labels, size, and practical download requirements.
+
+The current dataset requirement is an openly accessible/free-to-use research dataset containing real and manipulated samples, both video and audio information, reliable labels/metadata, sufficient diversity, and a practical subset that can be processed on the available research hardware.
+
+Request-only or gated datasets such as FakeAVCeleb may remain useful as reference datasets, but they are not treated as the primary dataset unless project access is actually obtained.
+
+## 4. Secondary Objectives
 
 - Keep the system modular enough to replace individual encoders or fusion strategies.
 - Make experiments reproducible through configuration and version control.
@@ -29,7 +37,7 @@ Design, implement, and experimentally evaluate a reproducible audio-visual deepf
 - Document limitations and threats to validity.
 - Provide a practical inference/demo layer after the research evaluation is stable.
 
-## 4. In Scope
+## 5. In Scope
 
 - Video authenticity analysis
 - Audio authenticity analysis
@@ -44,7 +52,7 @@ Design, implement, and experimentally evaluate a reproducible audio-visual deepf
 - Reproducible experiment tracking
 - Local inference/demo application
 
-## 5. Out of Scope
+## 6. Out of Scope
 
 - Creating or distributing deepfake-generation tooling
 - Claiming universal detection of all synthetic media
@@ -52,7 +60,7 @@ Design, implement, and experimentally evaluate a reproducible audio-visual deepf
 - Committing raw datasets or large model checkpoints to Git
 - Optimizing for a single headline accuracy number at the expense of valid evaluation
 
-## 6. Functional Requirements
+## 7. Functional Requirements
 
 ### FR-01 — Video Input
 The system shall accept a supported video file and validate its format, duration, frame availability, and audio availability where applicable.
@@ -84,7 +92,7 @@ The pipeline shall calculate accuracy, precision, recall, F1-score, ROC-AUC and 
 ### FR-10 — Generalization Evaluation
 The evaluation framework shall support testing under manipulation or distribution conditions different from the training condition when the selected data supports this design.
 
-## 7. Non-Functional Requirements
+## 8. Non-Functional Requirements
 
 ### NFR-01 — Reproducibility
 A documented environment and configuration shall allow another developer to reproduce the principal experiments.
@@ -99,12 +107,12 @@ Code shall follow a consistent package structure, type/documentation conventions
 Secrets and credentials shall never be committed. Uploaded media shall be treated as untrusted input.
 
 ### NFR-05 — Resource Awareness
-The system shall be designed to support constrained research hardware through configurable frame sampling, batch size, resolution, model size and caching.
+The system shall support constrained research hardware through configurable frame sampling, batch size, resolution, model size and caching.
 
 ### NFR-06 — Auditability
 Experiments shall record dataset version/split, configuration, model version, metrics and relevant random seeds.
 
-## 8. Success Criteria
+## 9. Success Criteria
 
 The project will be considered successful when it has:
 
@@ -119,6 +127,6 @@ The project will be considered successful when it has:
 
 A high accuracy result is desirable, but **scientific validity and generalization are primary acceptance criteria**.
 
-## 9. Research Contribution Hypothesis
+## 10. Research Contribution Hypothesis
 
 The working hypothesis is that a carefully designed multimodal detector can exploit complementary audio and visual authenticity cues and achieve better robustness under selected distribution shifts than unimodal or naive-fusion baselines. This is a hypothesis to test, not a result assumed in advance.
