@@ -37,7 +37,15 @@ The project will establish controlled baselines before introducing the proposed 
 
 Accuracy will **not** be treated as the sole success criterion. Evaluation will include precision, recall, F1-score, ROC-AUC, confusion matrices, calibration/confidence analysis where appropriate, and generalization results.
 
-## 4. System Engineering Goals
+## 4. Dataset Policy
+
+The primary dataset is **not frozen yet**. We are prioritizing a dataset that is freely/openly accessible for academic use, contains paired audio and visual information, provides real and manipulated examples with usable labels, and is practical to download and process on available hardware.
+
+Previously considered datasets such as FakeAVCeleb remain useful references, but FakeAVCeleb requires a request/approval process and therefore is not treated as the primary dataset unless access is actually obtained.
+
+Current dataset candidates and the selection criteria are documented in [`docs/research/DATASET_SELECTION.md`](docs/research/DATASET_SELECTION.md).
+
+## 5. System Engineering Goals
 
 - Modular audio and visual processing pipelines
 - Reproducible preprocessing and training configuration
@@ -47,11 +55,11 @@ Accuracy will **not** be treated as the sole success criterion. Evaluation will 
 - Explainable, auditable inference output where supported
 - Documentation suitable for academic review and technical demonstration
 
-## 5. Repository Structure
+## 6. Repository Structure
 
 ```text
 multimodal-deepfake-detection/
-├── docs/                  # Requirements, UML, architecture, research documentation
+├── docs/                  # Requirements, SRS, UML, architecture, research documentation
 ├── src/                   # Production-oriented Python package
 ├── tests/                 # Automated tests
 ├── experiments/           # Experiment configurations and experiment records
@@ -65,7 +73,15 @@ multimodal-deepfake-detection/
 └── LICENSE
 ```
 
-## 6. Development Method
+## 7. Requirements and Research Documents
+
+- [`docs/requirements/SRS.md`](docs/requirements/SRS.md) — current Software Requirements Specification
+- [`docs/requirements/PROJECT_SCOPE.md`](docs/requirements/PROJECT_SCOPE.md) — project scope and functional/non-functional requirements
+- [`docs/research/DATASET_SELECTION.md`](docs/research/DATASET_SELECTION.md) — dataset candidates, access constraints and selection policy
+- [`docs/research/RESEARCH_PLAN.md`](docs/research/RESEARCH_PLAN.md) — research plan
+- [`docs/research/RISK_AND_VALIDITY_PROTOCOL.md`](docs/research/RISK_AND_VALIDITY_PROTOCOL.md) — validity, leakage and robustness protocol
+
+## 8. Development Method
 
 Development will proceed in milestones:
 
@@ -81,12 +97,12 @@ Development will proceed in milestones:
 - **M9:** inference application/demo
 - **M10:** reproducibility package and research paper
 
-## 7. Research Integrity
+## 9. Research Integrity
 
 The project will prioritize valid experimental methodology over inflated benchmark numbers. In particular, we will explicitly consider identity leakage, duplicate/source-video leakage, class imbalance, manipulation-specific artifacts, distribution shift, and limitations of dataset-based evaluation.
 
-## 8. Status
+## 10. Status
 
-**Current milestone: M0 — Project Definition & System Architecture**
+**Current milestone: M0 — Project Definition & System Architecture / Dataset Verification.**
 
-The implementation will begin only after the research scope, requirements, architecture, dataset protocol, and evaluation strategy have been reviewed and frozen.
+The problem definition, multimodal research direction and SRS are established. The primary dataset will be frozen only after a free/open candidate has been practically verified. Raw datasets will not be committed to this repository.
