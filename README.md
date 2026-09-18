@@ -39,11 +39,11 @@ Accuracy will **not** be treated as the sole success criterion. Evaluation will 
 
 ## 4. Dataset Policy
 
-The primary dataset is **not frozen yet**. We are prioritizing a dataset that is freely/openly accessible for academic use, contains paired audio and visual information, provides real and manipulated examples with usable labels, and is practical to download and process on available hardware.
+The **provisional primary dataset is LAV-DF (Localized Audio Visual DeepFake Dataset)**. It is being selected because it is specifically multimodal, provides real/fake data, has a documented public distribution of about 25.6 GB, and is substantially more practical for the first implementation than very large alternatives. The dataset is not frozen as final until access, terms, sample decoding, audio-video pairing, labels, and storage requirements are verified locally.
 
 Previously considered datasets such as FakeAVCeleb remain useful references, but FakeAVCeleb requires a request/approval process and therefore is not treated as the primary dataset unless access is actually obtained.
 
-Current dataset candidates and the selection criteria are documented in [`docs/research/DATASET_SELECTION.md`](docs/research/DATASET_SELECTION.md).
+Current dataset candidates, evidence and the freeze procedure are documented in [`docs/research/DATASET_SELECTION.md`](docs/research/DATASET_SELECTION.md).
 
 ## 5. System Engineering Goals
 
@@ -103,6 +103,6 @@ The project will prioritize valid experimental methodology over inflated benchma
 
 ## 10. Status
 
-**Current milestone: M0 — Project Definition & System Architecture / Dataset Verification.**
+**Current milestone: M1 — Dataset Verification & Preprocessing Pilot.**
 
 The problem definition, multimodal research direction and SRS are established. The primary dataset will be frozen only after a free/open candidate has been practically verified. Raw datasets will not be committed to this repository.
