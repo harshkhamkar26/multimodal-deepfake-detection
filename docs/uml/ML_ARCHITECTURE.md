@@ -2,77 +2,66 @@
 
 ## Objective
 
-Define the learning architecture at a level that can be implemented, tested, and revised after dataset/compute validation.
+Define an implementable multimodal architecture for the LAV-DF research pipeline while preserving strong unimodal and simple-fusion baselines.
 
 ## Proposed Research Architecture
 
-```text
-                           VIDEO
-                             │
-                 ┌───────────┴───────────┐
-                 │                       │
-                 ▼                       ▼
-          Frame Sampling            Audio Extraction
-                 │                       │
-                 ▼                       ▼
-          Face/Region Prep       Segment / Resample
-                 │                       │
-                 ▼                       ▼
-          Visual Encoder         Acoustic Encoder
-                 │                       │
-                 ▼                       ▼
-          Temporal Features      Temporal Features
-                 │                       │
-                 └───────────┬───────────┘
-                             ▼
-                     Multimodal Fusion
-                             │
-                             ▼
-                       Classifier Head
-                             │
-                 ┌───────────┴───────────┐
-                 ▼                       ▼
-             REAL/FAKE             Authenticity Score
-                                         │
-                                  Calibration/Evaluation
+```
+VIDEO -----------------------> Frame/Face Preprocessing ---> Visual Encoder ---                                                                                                                                                                 -> Temporal Alignment
+                                                                                       |
+AUDIO ----------------------> Audio Preprocessing ----------> Audio Encoder ----/       |
+                                                                                       v
+                                                                          Cross-Modal Interaction
+                                                                                       |
+                                                                                       v
+                                                                          Reliability Estimator
+                                                                                       |
+                                                                                       v
+                                                                       Dynamic Modality Weighting
+                                                                                       |
+                                                                                       v
+                                                                            Temporal Fusion Block
+                                                                                       |
+                                                        +------------------------------+----------------+
+                                                        |                                               |
+                                                        v                                               v
+                                                Segment Scores                                   Video Score
+                                                        |                                               |
+                                                        +-----------------------+-----------------------+
+                                                                                |
+                                                                                v
+                                                                      Calibration / Explainability
 ```
 
 ## Branch Responsibilities
 
 ### Visual branch
-
-1. Decode/sample frames.
-2. Apply reproducible spatial preprocessing.
-3. Extract visual representations with a selected encoder.
-4. Aggregate information across time.
-5. Expose a visual-only prediction for baseline evaluation.
+1. Decode and sample frames.
+2. Apply reproducible spatial/face preprocessing.
+3. Extract visual representations.
+4. Preserve temporal ordering.
+5. Produce visual-only predictions for the baseline.
 
 ### Audio branch
+1. Extract and validate audio.
+2. Resample and segment reproducibly.
+3. Generate the selected acoustic representation.
+4. Extract acoustic representations.
+5. Preserve temporal alignment with visual segments.
+6. Produce audio-only predictions for the baseline.
 
-1. Extract the audio track when available.
-2. Apply reproducible resampling/segmentation.
-3. Transform the signal into the selected acoustic representation.
-4. Extract acoustic representations with a selected encoder.
-5. Aggregate information across time.
-6. Expose an audio-only prediction for baseline evaluation.
+### Temporal alignment
+Audio and visual features shall be mapped to a common segment timeline. The alignment strategy and segment duration shall be configurable and recorded.
 
-### Fusion branch
+### Reliability estimator
+The proposed model shall estimate a reliability value for each available modality at each temporal segment or equivalent model unit.
 
-The architecture must permit comparison of at least:
+Potential reliability signals may include learned feature quality, modality consistency, prediction uncertainty or learned attention. The exact mechanism must be selected through experiments rather than assumed.
 
-- score-level/simple fusion baseline;
-- feature-level fusion baseline;
-- proposed learned fusion mechanism.
+### Dynamic fusion
+The proposed fusion shall use the reliability signals to weight modality evidence before producing the fused temporal representation.
 
-The exact proposed fusion method remains a decision after dataset and compute assessment.
-
-## Training Modes
-
-The implementation should support:
-
-- frozen pretrained encoders + trainable heads;
-- partial fine-tuning;
-- end-to-end fine-tuning when compute and data justify it.
+A missing or unusable modality shall receive a documented fallback treatment rather than silently contributing zero evidence.
 
 ## Required Experimental Models
 
@@ -80,18 +69,40 @@ The implementation should support:
 |---|---|
 | Video-only | Visual baseline |
 | Audio-only | Audio baseline |
-| Simple fusion | Transparent multimodal baseline |
-| Proposed fusion | Research model |
-| Proposed fusion ablations | Contribution analysis |
+| Simple score fusion | Transparent multimodal baseline |
+| Simple feature fusion | Stronger baseline |
+| Proposed temporal fusion | Research model |
+| Proposed without reliability | Reliability ablation |
+| Proposed without temporal modeling | Temporal ablation |
+| Proposed without cross-modal interaction | Fusion ablation |
 
-## Key Architectural Constraints
+## Research Outputs
+
+The implementation should expose:
+- video-only score;
+- audio-only score;
+- fused score;
+- temporal segment scores;
+- modality reliability values;
+- modality disagreement;
+- confidence/calibration information where supported.
+
+## Training Modes
+
+Support:
+- frozen pretrained encoders + trainable heads;
+- partial fine-tuning;
+- end-to-end fine-tuning when compute and data justify it.
+
+## Engineering Constraints
 
 - Both modality branches must be independently testable.
 - Fusion must not hide modality-specific failures.
-- The same test protocol must be used when comparing models.
-- Temporal information must not be discarded without an explicit baseline justification.
-- Exact encoders are not frozen until dataset and compute audits are complete.
+- Temporal information must be retained unless an experiment explicitly defines a non-temporal baseline.
+- Exact encoders are not frozen until the dataset/compute pilot is complete.
+- Preprocessing must be shared between evaluation and inference.
+- Chunked feature extraction must be resumable after runtime restart.
 
 ## Research Hypothesis
 
-The working hypothesis is that complementary audio-visual evidence can improve robustness under selected distribution shifts compared with unimodal and naive-fusion baselines. This remains experimentally testable and must not be presented as a guaranteed result.
+Reliability-aware temporal fusion may improve robustness when one modality is less informative, degraded or inconsistent with the other modality. This is an experimentally testable hypothesis, not a guaranteed result.
