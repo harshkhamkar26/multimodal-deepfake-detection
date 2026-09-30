@@ -1,108 +1,121 @@
 # Multimodal Deepfake Detection
 
-> **Research Project:** Robust Multimodal Audio-Visual Deepfake Detection with Cross-Manipulation Generalization
+> Research Project: Robust Multimodal Audio-Visual Deepfake Detection with Reliability-Aware Temporal Fusion and Cross-Manipulation Generalization
 
-## 1. Overview
+## Overview
 
-This project investigates whether combining visual and acoustic evidence can improve the robustness of deepfake detection compared with unimodal detectors. The system is designed as a reproducible research and engineering project rather than a single benchmark classifier.
+This project studies whether combining visual and acoustic evidence can improve deepfake detection robustness compared with unimodal and simple-fusion detectors.
 
-The planned system will analyze a video through two complementary pipelines:
+The current research architecture adds:
+- temporal segment-level analysis;
+- reliability estimation for audio and visual modalities;
+- dynamic modality weighting;
+- modality-disagreement analysis;
+- robustness and cross-manipulation evaluation;
+- restart-safe, chunked dataset preprocessing for Colab/research environments;
+- explainability and error analysis.
 
-- **Visual pipeline:** sampled frames → face/region preprocessing → visual representation → visual authenticity evidence.
-- **Audio pipeline:** extracted speech/audio → signal preprocessing → acoustic representation → audio authenticity evidence.
-- **Fusion layer:** combines modality-specific representations/evidence to produce a final authenticity decision.
-- **Explainability layer:** provides confidence and modality/region-level evidence where technically supported.
+These are research hypotheses and must be validated through controlled experiments.
 
-A central research question is whether multimodal fusion improves **generalization to manipulation conditions that differ from those seen during training**, rather than merely improving performance on an in-distribution test split.
+## Current Dataset
 
-## 2. Research Questions
+**Primary dataset: LAV-DF (Localized Audio-Visual DeepFake Dataset).**
 
-1. How much does audio contribute to deepfake detection beyond visual evidence alone?
-2. Does multimodal fusion outperform strong video-only and audio-only baselines?
-3. Which fusion strategy provides the best trade-off between performance, robustness, and computational cost?
-4. How does performance change under cross-manipulation evaluation?
-5. How does the system behave when the audio and visual modalities provide conflicting evidence?
+Status: selected as the primary implementation dataset; final experimental freeze is conditional on local verification of access terms, decoding, labels, audio-video pairing, storage, metadata and leakage-resistant splits.
 
-## 3. Planned Experimental Structure
+Raw dataset files are never committed to this repository.
 
-The project will establish controlled baselines before introducing the proposed multimodal method:
+See:
+- docs/research/DATASET_SELECTION.md
+- docs/requirements/SRS.md
+- docs/requirements/SRS_TRACEABILITY.md
+- docs/research/RESEARCH_PLAN.md
+- docs/research/RISK_AND_VALIDITY_PROTOCOL.md
 
-1. Video-only baseline
-2. Audio-only baseline
-3. Simple multimodal fusion baseline
-4. Proposed multimodal fusion model
-5. Ablation studies
-6. Cross-manipulation/generalization evaluation
-7. Robustness and failure analysis
+## Research Questions
 
-Accuracy will **not** be treated as the sole success criterion. Evaluation will include precision, recall, F1-score, ROC-AUC, confusion matrices, calibration/confidence analysis where appropriate, and generalization results.
+1. How much does audio contribute beyond a visual baseline?
+2. How much does visual evidence contribute beyond an audio baseline?
+3. Does simple multimodal fusion improve over unimodal systems?
+4. Does reliability-aware temporal fusion provide measurable additional value?
+5. Can temporal evidence localize manipulated intervals where labels permit?
+6. How does the model behave when audio and visual evidence disagree?
+7. How robust is the system to modality degradation and distribution shift?
 
-## 4. Dataset Policy
+## Experimental Ladder
 
-The **provisional primary dataset is LAV-DF (Localized Audio Visual DeepFake Dataset)**. It is being selected because it is specifically multimodal, provides real/fake data, has a documented public distribution of about 25.6 GB, and is substantially more practical for the first implementation than very large alternatives. The dataset is not frozen as final until access, terms, sample decoding, audio-video pairing, labels, and storage requirements are verified locally.
+1. Dataset and split validation
+2. Video-only baseline
+3. Audio-only baseline
+4. Simple score/feature fusion
+5. Proposed reliability-aware temporal fusion
+6. Ablation studies
+7. Cross-manipulation/distribution evaluation
+8. Robustness evaluation
+9. Modality disagreement and error analysis
+10. Reproducibility and paper package
 
-Previously considered datasets such as FakeAVCeleb remain useful references, but FakeAVCeleb requires a request/approval process and therefore is not treated as the primary dataset unless access is actually obtained.
+## Proposed Architecture
 
-Current dataset candidates, evidence and the freeze procedure are documented in [`docs/research/DATASET_SELECTION.md`](docs/research/DATASET_SELECTION.md).
+Video -> visual preprocessing -> visual encoder -> temporal features
+Audio -> audio preprocessing -> acoustic encoder -> temporal features
+Both -> temporal alignment -> cross-modal interaction -> reliability estimation -> dynamic modality weighting -> temporal fusion -> segment/video prediction
 
-## 5. System Engineering Goals
+The proposed model will be compared against strong unimodal and transparent fusion baselines.
 
-- Modular audio and visual processing pipelines
-- Reproducible preprocessing and training configuration
-- Identity-aware and leakage-resistant dataset splitting
-- Version-controlled experiments and results
-- Clear separation between research code and application/deployment code
-- Explainable, auditable inference output where supported
-- Documentation suitable for academic review and technical demonstration
+## Engineering Requirements
 
-## 6. Repository Structure
+- persistent dataset manifests;
+- chunked and resumable preprocessing;
+- configurable sampling and segment sizes;
+- explicit train/validation/test splits;
+- identity/source leakage checks where metadata permits;
+- experiment IDs, seeds, configs and code/model versions;
+- raw-data and secret exclusions;
+- shared preprocessing between evaluation and inference.
 
-```text
+## Repository Structure
+
+```
 multimodal-deepfake-detection/
-├── docs/                  # Requirements, SRS, UML, architecture, research documentation
-├── src/                   # Production-oriented Python package
-├── tests/                 # Automated tests
-├── experiments/           # Experiment configurations and experiment records
-├── notebooks/             # Exploratory analysis only
-├── configs/               # Reproducible configuration files
-├── scripts/               # CLI utilities and pipeline scripts
-├── results/               # Lightweight result summaries and figures
-├── data/                  # Dataset documentation; raw datasets are not committed
+├── docs/
+│   ├── requirements/
+│   ├── research/
+│   └── uml/
+├── src/
+├── tests/
+├── experiments/
+├── notebooks/
+├── configs/
+├── scripts/
+├── results/
+├── data/
 ├── .gitignore
-├── README.md
-└── LICENSE
+└── README.md
 ```
 
-## 7. Requirements and Research Documents
+## Development Milestones
 
-- [`docs/requirements/SRS.md`](docs/requirements/SRS.md) — current Software Requirements Specification
-- [`docs/requirements/PROJECT_SCOPE.md`](docs/requirements/PROJECT_SCOPE.md) — project scope and functional/non-functional requirements
-- [`docs/research/DATASET_SELECTION.md`](docs/research/DATASET_SELECTION.md) — dataset candidates, access constraints and selection policy
-- [`docs/research/RESEARCH_PLAN.md`](docs/research/RESEARCH_PLAN.md) — research plan
-- [`docs/research/RISK_AND_VALIDITY_PROTOCOL.md`](docs/research/RISK_AND_VALIDITY_PROTOCOL.md) — validity, leakage and robustness protocol
+- M0: definition, requirements and architecture
+- M1: LAV-DF verification and restart-safe preprocessing
+- M2: visual baseline
+- M3: audio baseline
+- M4: simple multimodal baseline
+- M5: proposed reliability-aware temporal fusion
+- M6: optimization and experiment infrastructure
+- M7: ablation, generalization and robustness
+- M8: explainability and error analysis
+- M9: inference/demo
+- M10: reproducibility package and research paper
 
-## 8. Development Method
+## Research Integrity
 
-Development will proceed in milestones:
+Accuracy alone is not treated as proof of a successful detector. The project explicitly addresses data leakage, identity/source leakage, manipulation-specific artifacts, class imbalance, calibration, missing modalities, distribution shift and preprocessing/inference mismatch.
 
-- **M0:** project definition, requirements, UML and system architecture
-- **M1:** dataset strategy and preprocessing pipeline
-- **M2:** visual baseline
-- **M3:** audio baseline
-- **M4:** multimodal baseline
-- **M5:** proposed fusion architecture
-- **M6:** optimization and controlled experiments
-- **M7:** ablation, cross-manipulation and robustness studies
-- **M8:** explainability and error analysis
-- **M9:** inference application/demo
-- **M10:** reproducibility package and research paper
+The paper will report the evidence actually obtained and will not claim universal generalization or state-of-the-art performance without a fair, current and directly comparable benchmark.
 
-## 9. Research Integrity
+## Current Status
 
-The project will prioritize valid experimental methodology over inflated benchmark numbers. In particular, we will explicitly consider identity leakage, duplicate/source-video leakage, class imbalance, manipulation-specific artifacts, distribution shift, and limitations of dataset-based evaluation.
+**M1 — Dataset Verification & Preprocessing Pilot**
 
-## 10. Status
-
-**Current milestone: M1 — Dataset Verification & Preprocessing Pilot.**
-
-The problem definition, multimodal research direction and SRS are established. The primary dataset will be frozen only after a free/open candidate has been practically verified. Raw datasets will not be committed to this repository.
+Next implementation step: build the restart-safe LAV-DF manifest/index and chunked preprocessing pipeline before training the first baseline.
