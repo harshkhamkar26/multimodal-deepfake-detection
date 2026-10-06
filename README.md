@@ -74,10 +74,22 @@ The proposed model will be compared against strong unimodal and transparent fusi
 - raw-data and secret exclusions;
 - shared preprocessing between evaluation and inference.
 
-## Repository Structure
+## Repository and Data Structure
+
+The repository contains code, documentation, experiment definitions and reproducibility metadata. The large LAV-DF media files remain outside GitHub.
 
 ```
 multimodal-deepfake-detection/
+├── data/
+│   ├── metadata/
+│   ├── manifests/
+│   ├── splits/
+│   ├── cache/
+│   ├── checkpoints/
+│   └── logs/
+├── features/
+│   ├── audio/
+│   └── visual/
 ├── docs/
 │   ├── requirements/
 │   ├── research/
@@ -89,10 +101,23 @@ multimodal-deepfake-detection/
 ├── configs/
 ├── scripts/
 ├── results/
-├── data/
-├── .gitignore
 └── README.md
 ```
+
+### Local / Google Drive raw-data layout
+
+The downloaded LAV-DF dataset is approximately 25 GB and should be stored under:
+
+```
+data/raw/LAV-DF/
+├── train/
+├── dev/
+└── test/
+```
+
+For Google Colab, the persistent copy should be under the corresponding `data/raw/LAV-DF` path in Google Drive. The raw media is never committed to GitHub.
+
+See **[docs/research/DATA_LAYOUT.md](docs/research/DATA_LAYOUT.md)** for the storage, manifest, chunking and checkpoint policy.
 
 ## Development Milestones
 
