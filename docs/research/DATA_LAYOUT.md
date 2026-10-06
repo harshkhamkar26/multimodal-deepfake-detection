@@ -39,15 +39,21 @@ The exact contents of `train`, `dev`, and `test` will be verified from the downl
 
 ## Current downloaded dataset
 
-The current downloaded dataset is approximately 25 GB and contains paired audio-visual media. The source currently resides under the Desktop project tree in an `archive (7)\\LAV-DF` location.
-
-It should be reorganized so that the dataset root becomes:
+The current downloaded dataset is approximately 25 GB and contains paired audio-visual media. The verified local dataset root is now:
 
 ```
 data\\raw\\LAV-DF
 ```
 
-The raw dataset must remain unchanged after placement; preprocessing outputs belong in separate directories.
+with the dataset-provided splits:
+
+```
+data\\raw\\LAV-DF\\train
+data\\raw\\LAV-DF\\dev
+data\\raw\\LAV-DF\\test
+```
+
+The obsolete `data\\archive (7)` wrapper was empty after the move and has been removed. The raw dataset must remain unchanged after placement; preprocessing outputs belong in separate directories.
 
 ## Google Colab / Google Drive layout
 
